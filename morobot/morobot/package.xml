@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>morobot</name>
+  <version>0.0.1</version>
+  <description>
+    morobot meta package
+  </description>
+  <license>Apache 2.0</license>
+  <author email="odk9611@gmail.com">Bishop Pearson</author>
+  <maintainer email="odk9611@gmail.com">Bishop Pearson</maintainer>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>morobot_bringup</exec_depend>
+  <exec_depend>morobot_description</exec_depend>
+  <exec_depend>morobot_gazebo</exec_depend>
+  <exec_depend>morobot_navigation</exec_depend>
+  <exec_depend>morobot_slam</exec_depend>
+  <exec_depend>morobot_teleop</exec_depend>
+  <exec_depend>morobot_marker_tracker</exec_depend>
+  <export><metapackage/></export>
+</package>

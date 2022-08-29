@@ -1,0 +1,4 @@
+<launch>
+  <!-- launching rviz node -->
+  <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find morobot_slam)/rviz/morobot_gmapping.rviz"/>
+</launch>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>morobot_image_recognition</name>
+  <version>0.0.1</version>
+  <description>
+    morobot package - launchers for image recognition application.
+  </description>
+  <license>Apache 2.0</license>
+  <author email="odk9611@gmail.com">Bishop Pearson</author>
+  <maintainer email="odk9611@gmail.com">Bishop Pearson</maintainer>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>morobot_bringup</exec_depend>
+  <exec_depend>ar_track_alvar</exec_depend>
+  <exec_depend>ar_track_alvar_msgs</exec_depend>
+</package>

@@ -1,0 +1,4 @@
+<launch>
+  <!-- keyboard teleoperation node for morobot -->
+  <node pkg="morobot_teleop" type="morobot_teleop_key" name="morobot_teleop_keyboard"  output="screen"/>
+</launch>

@@ -1,0 +1,116 @@
+<launch>
+  <arg name="multi_robot_name" default=""/>
+  <param name="ekf_option" type="bool" value="true" /> <!--false-->
+  <arg   name="ekf_option_flag" default="1"/>
+  <param name="active_map" type="bool" value="true" /> <!--false-->
+
+<group if="$(eval arg('ekf_option_flag')==1)">
+<!-- ekf_localization -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true"> 
+    <rosparam command="load" file="$(find morobot_navigation)/param/ekf_localization.yaml" />
+  </node>
+</group>
+
+<!-- IMU -->
+  <node pkg="iahrs_driver" type="iahrs_driver" name="iahrs_driver" output="screen" />
+    <param name="m_bSingle_TF_option" type="bool" value="false" /> <!--true-->
+
+<!--md bringup-->
+    <node pkg="md" type="md_node" name="md_node" output="screen">
+        <param name = "diameter"         value = "170"/>
+        <param name = "wheelLength"      value = "350"/>
+        <param name = "reduction"        value = "1"/>
+        <param name = "baudrate"         value = "19200"/>
+        <param name = "direction"        value = "1"/>
+        <param name = "PC"               value = "172"/>
+        <param name = "MDUI"             value = "184"/>
+        <param name = "MDT"              value = "183"/>
+        <param name = "RMID"             value = "183"/>
+        <param name = "halltype"         value = "30"/>
+        <param name = "maxrpm"           value = "300"/>
+        <param name = "angleresolution"  value = "0"/>
+        <param name = "slowstart"        value = "300"/>
+        <param name = "slowdown"         value = "300"/>
+    </node>
+
+    <node pkg="md" type="vel_cmd_node" name="vel_cmd_node" output="screen">
+        <param name = "reset_odometry"  value = "0"/>
+        <param name = "reset_angle"     value = "0"/>
+        <param name = "reset_alarm"     value = "0"/>
+    </node>
+
+
+
+<!-- run velodyne_pointcloud/TransformNodelet in a nodelet manager for a VLP-16 -->
+
+  <!-- declare arguments with default values -->
+  <arg name="calibration" default="$(find velodyne_pointcloud)/params/VLP16db.yaml"/>
+  <arg name="device_ip" default="" />
+  <arg name="frame_id" default="base_scan" />
+  <arg name="manager" default="$(arg frame_id)_nodelet_manager" />
+  <arg name="max_range" default="130.0" />
+  <arg name="min_range" default="0.4" />
+  <arg name="pcap" default="" />
+  <arg name="port" default="2368" />
+  <arg name="read_fast" default="false" />
+  <arg name="read_once" default="false" />
+  <arg name="repeat_delay" default="0.0" />
+  <arg name="rpm" default="600.0" />
+  <arg name="gps_time" default="false" />
+  <arg name="pcap_time" default="false" />
+  <arg name="cut_angle" default="-0.01" />
+  <arg name="timestamp_first_packet" default="false" />
+  <arg name="laserscan_ring" default="-1" />
+  <arg name="laserscan_resolution" default="0.007" />
+  <arg name="organize_cloud" default="false" />
+
+  <!-- start nodelet manager and driver nodelets -->
+  <include file="$(find velodyne_driver)/launch/nodelet_manager.launch">
+    <arg name="device_ip" value="$(arg device_ip)"/>
+    <arg name="frame_id" value="$(arg frame_id)"/>
+    <arg name="manager" value="$(arg manager)" />
+    <arg name="model" value="VLP16"/>
+    <arg name="pcap" value="$(arg pcap)"/>
+    <arg name="port" value="$(arg port)"/>
+    <arg name="read_fast" value="$(arg read_fast)"/>
+    <arg name="read_once" value="$(arg read_once)"/>
+    <arg name="repeat_delay" value="$(arg repeat_delay)"/>
+    <arg name="rpm" value="$(arg rpm)"/>
+    <arg name="gps_time" value="$(arg gps_time)"/>
+    <arg name="pcap_time" value="$(arg pcap_time)"/>
+    <arg name="cut_angle" value="$(arg cut_angle)"/>
+    <arg name="timestamp_first_packet" value="$(arg timestamp_first_packet)"/>
+  </include>
+
+  <!-- start transform nodelet -->
+  <include file="$(find velodyne_pointcloud)/launch/transform_nodelet.launch">
+    <arg name="model" value="VLP16"/>
+    <arg name="calibration" value="$(arg calibration)"/>
+    <arg name="manager" value="$(arg manager)" />
+    <arg name="fixed_frame" value="" />
+    <arg name="target_frame" value="" />
+    <arg name="max_range" value="$(arg max_range)"/>
+    <arg name="min_range" value="$(arg min_range)"/>
+    <arg name="organize_cloud" value="$(arg organize_cloud)"/>
+  </include>
+
+  <!-- start laserscan nodelet -->
+  <include file="$(find velodyne_pointcloud)/launch/laserscan_nodelet.launch">
+    <arg name="manager" value="$(arg manager)" />
+    <arg name="ring" value="$(arg laserscan_ring)"/>
+    <arg name="resolution" value="$(arg laserscan_resolution)"/>
+  </include>
+
+<!-- TETRA service -->
+   <node pkg="morobot_service" type="morobot_service" name="morobot_service" output="screen" />
+
+<!-- Launch joy node -->
+   <node name="joy_node" pkg="joy" type="joy_node" />
+
+
+<!-- joy_teleop -->
+   <node pkg="morobot_joy_teleop" type="morobot_joy_teleop.py" name="morobot_joy_teleop" />
+
+
+
+</launch>

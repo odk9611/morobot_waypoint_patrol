@@ -1,0 +1,20 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="map_file" default="$(find morobot_navigation)/maps/map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="true"/>
+
+  <!-- morobot -->
+  <include file="$(find morobot_bringup)/launch/morobot_remote_G2.launch"/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find morobot_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find morobot_navigation)/launch/move_base.launch">
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+</launch>

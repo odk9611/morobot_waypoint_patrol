@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>morobot_description</name>
+  <version>0.0.1</version>
+  <description>
+    morobot package - robot description
+  </description>
+  <license>Apache 2.0</license>
+  <author email="odk9611@gmail.com">Bishop Pearson</author>
+  <maintainer email="odk9611@gmail.com">Bishop Pearson</maintainer>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>urdf</depend>
+  <depend>xacro</depend>
+</package>
